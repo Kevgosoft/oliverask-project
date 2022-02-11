@@ -3,109 +3,7 @@ import axios from "axios";
 import React from 'react';
 import './editUser.scss';
 
-class EditUser extends React.Component {
 
-    constructor(props) {
-      super(props)
-      this.state = { 
-         formValues: [{ id: "", name: "", email: "", mobile: "", created_at: "", updated_at: "" }]
-       };
-      this.handleSubmit = this.handleSubmit.bind(this)
-    }
-
-   
-
-    handleChange(i, e) {
-      let formValues = this.state.formValues;
-      formValues[i][e.target.name] = e.target.value;
-      this.setState({ formValues });
-    }
-  
- 
-
-    //Here, compare to find id associated with name
-    getUsers() {
-        let formValues = this.state.formValues; 
-        let foundId = 0;
-        axios.get('http://localhost:4300/backend/index').then(function(response) {
-            console.log(response.data);
-            console.log(formValues[0].name);
-            console.log(response.data[1].name);
-
-            console.log(response.data.length);
-            for(let i = 0; i < response.data.length; i++){
-              console.log(response.data[i].name)
-              if(response.data[i].name === formValues[0].name){
-
-                foundId = response.data[i].id;
-                response.data[i].email = formValues[0].email;
-                response.data[i].mobile = formValues[0].mobile;
-                console.log("Match", foundId );
-                console.log(response.data[i]);
-
-
-        
-                axios.put(`http://localhost:4300/backend/index/${i}`, response.data[i])    
-                .then(function(response){
-                    console.log(response.data);
-                    console.log("Updated");     
-                });
-                //updateNow(foundId, formValues);
-
-
-              }
-            }    
-        });
-    }
-    /*
-    updateNow(i, d) {
-      axios.put(`http://localhost:4300/backend/index/${i}`, response.data[i])    
-      .then(function(response){
-          console.log(response.data);
-          console.log("Updated");     
-      });
-    }
-    */
- 
-    handleSubmit(event) {
-      event.preventDefault();
-      alert(JSON.stringify(this.state.formValues));
-    }
-  
-    render() {
-  
-      return (
-      
-          <form  onSubmit={this.handleSubmit}>
-              <label>Now in EDIT Mode!</label>
-            {this.state.formValues.map((element, index) => (
-              <div className="form-inline" key={index}>
-                <label>Name:</label>
-                <input type="text" name="name" value={element.name || ""} onChange={e => this.handleChange(index, e)} />
-                <label>Email:</label>
-                <input type="text" name="email" value={element.email || ""} onChange={e => this.handleChange(index, e)} />
-                <label>Mobile:</label>
-                <input type="text" name="mobile" value={element.mobile || ""} onChange={e => this.handleChange(index, e)} />
-                {
-                  index ? 
-                    <button type="button"  className="button remove" onClick={() => this.removeFormFields(index)}>Remove</button> 
-                  : null
-                }
-              </div>
-            ))}
-            <div className="button-section">
-                
-                <button className="button submit" type="submit" onClick={() => this.getUsers()}>Submit Edit</button>
-            </div>
-        </form>
-      );
-    }
-  }
-  export default EditUser;
-
-
-
-/*
 export default function EditUser() {
     const testData = {
         id: "10",
@@ -228,4 +126,3 @@ export default function EditUser() {
         </div>
     )
 }
-*/
